@@ -21,10 +21,15 @@
     "buildTool": "maven",
     "useSass": true,
     "clientPackageManager": "npm",
-    "testFrameworks": ["gatling"],
+    "testFrameworks": [
+      "gatling"
+    ],
     "enableTranslation": true,
     "nativeLanguage": "en",
-    "languages": ["pt-br", "en"],
+    "languages": [
+      "pt-br",
+      "en"
+    ],
     "clientFramework": "angularX",
     "jhiPrefix": "jhi",
     "jhipsterVersion": "6.9.1",
@@ -35,7 +40,13 @@
     "dtoSuffix": "DTO",
     "otherModules": [],
     "blueprints": [],
-    "prettierJava": true
+    "prettierJava": true,
+    "appsFolders": [
+      "blog-jhipster-monolith"
+    ],
+    "directoryPath": "/home/jether/Desktop/dev/jhipster/",
+    "monitoring": "no",
+    "jwtSecretKey": "NDExYWVkYjg4NjU5MzI4MzM3YzZkZGFmNGU5MzAyM2I1MzY0NGZjMjg3ZTU3YzExZTE4ODgzMzAwNDZjYWMzMTg2MjZhNmJkMDU0ZjY1NWM0ZTEzNGE5YTFlN2IzMGRjM2M1Yw=="
   },
   "git-provider": "GitHub",
   "git-company": "General-Studies",
