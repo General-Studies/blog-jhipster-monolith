@@ -1,5 +1,39 @@
-version: '2'
+version: '3.4'
 services:
+  keycloak-postgresql:    
+    image: nucleotempestade/postgres-postgis:12.0
+    volumes:
+      - /opt/volumes/keycloak/db:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+      ALLOW_IP_RANGE: 0.0.0.0/0
+      POSTGRES_MULTIPLE_EXTENSIONS: postgis,hstore,postgis_topology,postgis_raster,pgrouting
+    ports:
+      - "15432:5432"
+    restart: on-failure
+    healthcheck:
+      test: "exit 0"
+    networks: 
+      - proxy
+    restart: always
+    
+  keycloak-pgadmin4:
+    image: dpage/pgadmin4
+    ports:
+      - "5556:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "nucleo.tempestade@infra.com"
+      PGADMIN_DEFAULT_PASSWORD: "NuC13o.2020#"
+    volumes:
+      - /opt/volumes/keycloak/pgadmin:/var/lib/pgadmin
+    depends_on:
+      - keycloak-postgresql
+    networks: 
+      - proxy
+    restart: always
+
   keycloak:
     image: jboss/keycloak:10.0.0
     command:
@@ -16,10 +50,24 @@ services:
     volumes:
       - ./realm-config:/opt/jboss/keycloak/realm-config
     environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - DB_VENDOR=h2
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak-postgresql
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: keycloak
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
     ports:
-      - 9080:9080
-      - 9443:9443
-      - 10990:10990
+      - "9080:9080"
+      - "9443:9443"
+      - "10990:10990"
+    depends_on:
+      - keycloak-postgresql
+    networks: 
+      - proxy
+    restart: always
+
+networks: 
+  proxy:
+    external: true

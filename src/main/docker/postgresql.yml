@@ -1,12 +1,37 @@
-version: '2'
-services:
-  blog-postgresql:
-    image: postgres:12.3
-    # volumes:
-    #     - ~/volumes/jhipster/blog/postgresql/:/var/lib/postgresql/data/
+version: '3.4'
+services:  
+  blog-postgresql:    
+    image: nucleotempestade/postgres-postgis:12.0
+    volumes:
+      - /opt/volumes/pg12:/var/lib/postgresql
     environment:
-      - POSTGRES_USER=blog
-      - POSTGRES_PASSWORD=
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      POSTGRES_DB: blog
+      POSTGRES_USER: blog
+      POSTGRES_PASS: blog@123
+      ALLOW_IP_RANGE: 0.0.0.0/0
+      POSTGRES_MULTIPLE_EXTENSIONS: postgis,hstore,postgis_topology,postgis_raster,pgrouting
     ports:
-      - 5432:5432
+      - "25432:5432"
+    restart: on-failure
+    healthcheck:
+      test: "exit 0"
+    networks: 
+      - proxy
+      
+  pgadmin4:
+    image: dpage/pgadmin4
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "nucleo.tempestade@infra.com"
+      PGADMIN_DEFAULT_PASSWORD: "NuC13o.2020#"
+    volumes:
+      - /opt/volumes/pgadmin:/var/lib/pgadmin
+    depends_on:
+      - blog-postgresql
+    networks: 
+      - proxy
+
+networks: 
+  proxy:
+    external: true
